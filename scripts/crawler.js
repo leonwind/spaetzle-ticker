@@ -12,6 +12,7 @@ function getNextSpaetzleDay() {
         })
 }
 
+
 async function iterate_days_until_spaetzle() {
     let date = new Date();
     let spaetzle_days = []
@@ -36,6 +37,7 @@ async function iterate_days_until_spaetzle() {
     return spaetzle_days;
 }
 
+
 async function visit_url(url) {
     const keywords = ["Spätzle", "spätzle"];
 
@@ -50,11 +52,13 @@ async function visit_url(url) {
     }
 
     return false;
-}    
+}
+
 
 function generate_mensa_link(date, use_proxy=true) {
     return generate_mensa_link_date_str(generate_YYYY_MM_DD(date), use_proxy);
 }
+
 
 
 function generate_mensa_link_date_str(date, use_proxy=true) {
