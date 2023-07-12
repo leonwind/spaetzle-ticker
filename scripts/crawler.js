@@ -1,7 +1,11 @@
 function getNextSpaetzleDay() {
     iterate_days_until_spaetzle()
-        .then((date) => {
-            document.getElementById("spaetzle-counter").innerHTML = date;
+        .then((dates) => {
+            let concat_str = "";
+            dates.forEach((date) => {
+               concat_str += date + "<br/>"; 
+            });
+            document.getElementById("spaetzle-counter").innerHTML = concat_str;
         })
 }
 
@@ -16,7 +20,6 @@ async function iterate_days_until_spaetzle() {
 
         let has_spaetzle_today = await visit_url(url_string);
         if (has_spaetzle_today) {
-            console.log("EARYL RETURN");
             spaetzle_days.push(generate_YYYY_MM_DD(date));
         }
         
@@ -36,41 +39,15 @@ async function visit_url(url) {
     const response = await fetch(url);
     const content = await response.text();
     
-    var arrayLength = keywords.length;
-for (var i = 0; i < arrayLength; i++) {
-    if (content.includes(keywords[i])) {
-        return true;
+    let len = keywords.length;
+    for (let i = 0; i < len; i++) {
+        if (content.includes(keywords[i])) {
+            return true;
+        }
     }
-    //Do something
-}    
 
     return false;
-    //return content.includes("spätzle");
-
-    /*
-    let found_key = false;
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true); 
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState !== XMLHttpRequest.DONE || xhr.status !== 200) {
-            return;
-        }
-        
-        let response = xhr.responseText;
-        let key = "spätzle"; 
-    
-        if (response.includes(key)) {
-            console.log("FOUND " + key);
-            this.found_key = true;
-        } 
-    };
-    
-    xhr.send();
-    xhr.wa
-    console.log("KEY exist: " + found_key);
-    return found_key;
-    */
-}
+}    
 
 function generate_mensa_link(date) {
     date_format = generate_YYYY_MM_DD(date);
