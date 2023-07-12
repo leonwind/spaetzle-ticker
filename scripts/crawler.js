@@ -2,11 +2,12 @@ function getNextSpaetzleDay() {
     iterate_days_until_spaetzle()
         .then((dates) => {
             let concat_str = "";
+
             dates.forEach((date) => {
                 let link = generate_mensa_link_date_str(date, false);
-                console.log(link);
                 concat_str += `<a href="${link}">${date}</a></br>`
             });
+
             document.getElementById("spaetzle-counter").innerHTML = concat_str;
         })
 }
@@ -16,9 +17,9 @@ async function iterate_days_until_spaetzle() {
     let spaetzle_days = []
 
     for (let i = 0; i < 30; i++) {
-        console.log(date)
+        //console.log(date)
         let url_string = generate_mensa_link(date);
-        console.log(url_string);
+        //console.log(url_string);
 
         let has_spaetzle_today = await visit_url(url_string);
         if (has_spaetzle_today) {
