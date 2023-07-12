@@ -3,7 +3,9 @@ function getNextSpaetzleDay() {
         .then((dates) => {
             let concat_str = "";
             dates.forEach((date) => {
-               concat_str += date + "<br/>"; 
+                let link = generate_mensa_link_date_str(date, false);
+                console.log(link);
+                concat_str += `<a href="${link}">${date}</a></br>`
             });
             document.getElementById("spaetzle-counter").innerHTML = concat_str;
         })
@@ -49,13 +51,24 @@ async function visit_url(url) {
     return false;
 }    
 
-function generate_mensa_link(date) {
-    date_format = generate_YYYY_MM_DD(date);
+function generate_mensa_link(date, use_proxy=true) {
+    return generate_mensa_link_date_str(generate_YYYY_MM_DD(date), use_proxy);
+}
+
+
+function generate_mensa_link_date_str(date, use_proxy=true) {
     const cors_proxy = "https://corsproxy.io/?"
     const url_prefix = "https://www.studierendenwerk-muenchen-oberbayern.de/mensa/speiseplan/speiseplan_";
     const url_suffix = "_422_-de.html";
-    return cors_proxy + url_prefix + date_format + url_suffix;
+
+    const url = url_prefix + date + url_suffix;
+
+    if (use_proxy) {
+        return cors_proxy + url;
+    } 
+    return url;
 }
+
 
 function generate_YYYY_MM_DD(date) {
     let year = date.getFullYear();
