@@ -1,83 +1,40 @@
-function getNextSpaetzleDay() {
-    iterate_days_until_spaetzle()
-        .then((dates) => {
-            let concat_str = "";
+async function get_spaetzle_days() {
+    const current_url = new URL(window.location)
+    const key = current_url.searchParams.get("key");
 
-            dates.forEach((date) => {
-                let link = generate_mensa_link_date_str(date, false);
-                concat_str += `<a href="${link}">${date}</a></br>`
-            });
-
-            document.getElementById("spaetzle-counter").innerHTML = concat_str;
-        })
-}
-
-
-async function iterate_days_until_spaetzle() {
-    let date = new Date();
-    let spaetzle_days = []
-
-    for (let i = 0; i < 30; i++) {
-        //console.log(date)
-        let url_string = generate_mensa_link(date);
-        //console.log(url_string);
-
-        let has_spaetzle_today = await visit_url(url_string);
-        if (has_spaetzle_today) {
-            spaetzle_days.push(generate_YYYY_MM_DD(date));
-        }
-        
-        date.setDate(date.getDate() + 1);
-        // Skip weekends
-        while (date.getDay() === 0 || date.getDay() === 6) {
-            date.setDate(date.getDate() + 1);
-        }
-    }
-
-    return spaetzle_days;
-}
-
-
-async function visit_url(url) {
     const keywords = ["Spätzle", "spätzle"];
 
+    const url = `https://corsproxy.io/?${key ? "key=" + key + "&" : ""}url=https://www.studierendenwerk-muenchen-oberbayern.de/mensa/speiseplan/speiseplan_422_-de.html`;
     const response = await fetch(url);
     const content = await response.text();
-    
-    let len = keywords.length;
-    for (let i = 0; i < len; i++) {
-        if (content.includes(keywords[i])) {
-            return true;
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(content, 'text/html');
+
+    let found_spaetzle = [];
+
+    Object.values(htmlDoc.getElementsByClassName("c-schedule__item")).forEach(
+        (speiseplan_elem) => {
+            let html_date = speiseplan_elem.getElementsByClassName("c-schedule__header")[0].getElementsByTagName("span")[0].innerHTML;
+            let potential_spaetzle = Object.values(speiseplan_elem.getElementsByClassName("c-menu-dish__title")).map((elem) => elem.innerHTML);
+            let spaetzle_dishes = [];
+            potential_spaetzle.forEach((dish) => {
+                for (const spaetzle of keywords) {
+                    console.log(dish);
+                    if (dish.includes(spaetzle)) {
+                        // Yippie
+                        spaetzle_dishes.push(dish);
+                        break;
+                    }
+                }
+            })
+            if (spaetzle_dishes.length > 0) {
+                found_spaetzle.push([html_date, spaetzle_dishes]);
+            }
         }
-    }
+    );
 
-    return false;
-}
-
-
-function generate_mensa_link(date, use_proxy=true) {
-    return generate_mensa_link_date_str(generate_YYYY_MM_DD(date), use_proxy);
-}
-
-
-
-function generate_mensa_link_date_str(date, use_proxy=true) {
-    const cors_proxy = "https://corsproxy.io/?"
-    const url_prefix = "https://www.studierendenwerk-muenchen-oberbayern.de/mensa/speiseplan/speiseplan_";
-    const url_suffix = "_422_-de.html";
-
-    const url = url_prefix + date + url_suffix;
-
-    if (use_proxy) {
-        return cors_proxy + url;
-    } 
-    return url;
-}
-
-
-function generate_YYYY_MM_DD(date) {
-    let year = date.getFullYear();
-    let month = ('0' + (date.getMonth() + 1)).slice(-2);
-    let day = ('0' + date.getDate()).slice(-2);
-    return year + '-' + month + '-' + day; 
+    console.log(found_spaetzle);
+    document.getElementById("spaetzle-counter").innerHTML = found_spaetzle.map(([html_date, spaetzle_dishes]) => {
+        return `<h1>${html_date}</h1><ul>${spaetzle_dishes.map((dish) => {return "<li>" + dish + "</li>"}).join("")}</ul>`
+    }).join("<br>");
 }
