@@ -6,12 +6,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="scripts/crawler.js"></script>
         <meta charset="utf-8">
+
+		<style>
+            footer {
+                position: fixed;
+				left: 0.5em;
+				bottom: 0.5em;
+				width: 100%;
+				text-align: left;
+            }
+		</style>
     </head>
 
     <body onload="get_spaetzle_days()">
         <div>
             <p>Spätzle next available on: </p>
-            <div id="spaetzle-counter"></div>
+            <div id="spaetzle-counter"></div>	
         </div>
     </body>
+
+	<footer>
+		<a href="https://github.com/leonwind/spaetzle-ticker">Source</a>
+	</footer>
 </html>
