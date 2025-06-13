@@ -1,5 +1,5 @@
 function shareDish(dish, dateStr) {
-	/// Vibe coded
+    /// Vibe coded
     const shareText = `${dish} on ${dateStr}`;
     const shareUrl = window.location.href.split("?")[0]; 
     if (navigator.share) {
@@ -16,7 +16,7 @@ function shareDish(dish, dateStr) {
 }
 
 function createGoogleCalendarLink(dateStr, dish) {
-	/// Vibe coded
+    /// Vibe coded
     const dateMatch = dateStr.match(/\d{2}\.\d{2}\.\d{4}/);
     if (!dateMatch) return "#";
 
@@ -38,7 +38,7 @@ function createGoogleCalendarLink(dateStr, dish) {
 }
 
 function createICSFile(dateStr, dish) {
-	/// Vibe coded
+    /// Vibe coded
     const dateMatch = dateStr.match(/\d{2}\.\d{2}\.\d{4}/);
     if (!dateMatch) return null;
 
@@ -62,7 +62,7 @@ function createICSFile(dateStr, dish) {
 }
 
 async function get_spaetzle_days() {
-	const counterElement = document.getElementById("spaetzle-counter");
+    const counterElement = document.getElementById("spaetzle-counter");
     counterElement.innerHTML = "Loading..."; 
 
     const current_url = new URL(window.location)
@@ -99,37 +99,37 @@ async function get_spaetzle_days() {
         }
     );
 
-	const spaetzle_container = document.getElementById("spaetzle-counter");
+    const spaetzle_container = document.getElementById("spaetzle-counter");
 
-	if (found_spaetzle.length === 0) {
-		spaetzle_container.innerHTML = "<p>No Spätzle dishes on the menu :(</p>";
-		return;
-	}
+    if (found_spaetzle.length === 0) {
+        spaetzle_container.innerHTML = "<p>No Spätzle dishes on the menu :(</p>";
+        return;
+    }
 
     console.log(found_spaetzle);
     spaetzle_container.innerHTML = found_spaetzle.map(([html_date, spaetzle_dishes]) => {
-		console.log(html_date);
-		const clean_date = html_date.replace(/<[^>]+>/g, '').trim();
+        console.log(html_date);
+        const clean_date = html_date.replace(/<[^>]+>/g, '').trim();
         return `<h1>${html_date}</h1>
         <ul>
             ${spaetzle_dishes.map((dish) => {
-				const gcalLink = createGoogleCalendarLink(html_date, dish);
+                const gcalLink = createGoogleCalendarLink(html_date, dish);
                 const icsLink = createICSFile(html_date, dish);
                 return `
                     <li>${dish}</li>
-					<li>
-						Add to Calendar:
+                    <li>
+                        Add to Calendar:
                         <a href="${icsLink}" download="${dish.replace(/\s+/g, "_")}.ics">
-							ICS
+                            ICS
                         </a>
-						&nbsp;
-						<a href="${gcalLink}" target="_blank" rel="noopener noreferrer">
-							Google Calendar
-						</a>
-					</li>
-					<li>
-						<button onclick="shareDish('${dish}', '${clean_date}')">Share</button>
-					</li>
+                        &nbsp;
+                        <a href="${gcalLink}" target="_blank" rel="noopener noreferrer">
+                            Google Calendar
+                        </a>
+                    </li>
+                    <li>
+                        <button onclick="shareDish('${dish}', '${clean_date}')">Share</button>
+                    </li>
                 `;
             }).join("")}
         </ul>`;
