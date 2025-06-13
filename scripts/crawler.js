@@ -99,8 +99,15 @@ async function get_spaetzle_days() {
         }
     );
 
+	const spaetzle_container = document.getElementById("spaetzle-counter");
+
+	if (found_spaetzle.length === 0) {
+		spaetzle_container.innerHTML = "<p>No Spätzle dishes on the menu :(</p>";
+		return;
+	}
+
     console.log(found_spaetzle);
-    document.getElementById("spaetzle-counter").innerHTML = found_spaetzle.map(([html_date, spaetzle_dishes]) => {
+    spaetzle_container.innerHTML = found_spaetzle.map(([html_date, spaetzle_dishes]) => {
 		console.log(html_date);
 		const clean_date = html_date.replace(/<[^>]+>/g, '').trim();
         return `<h1>${html_date}</h1>
